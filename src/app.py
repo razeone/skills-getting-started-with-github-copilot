@@ -88,7 +88,16 @@ def root():
 
 @app.get("/activities")
 def get_activities():
-    return activities
+    # Create a copy of activities with masked participant emails
+    activities_with_masked_participants = {}
+    for name, details in activities.items():
+        activity_copy = details.copy()
+        # Mask email addresses to show only the name part
+        activity_copy["participants"] = [
+            email.split("@")[0] for email in details["participants"]
+        ]
+        activities_with_masked_participants[name] = activity_copy
+    return activities_with_masked_participants
 
 
 @app.post("/activities/{activity_name}/signup")
